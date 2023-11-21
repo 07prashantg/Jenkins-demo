@@ -73,6 +73,20 @@ pipeline{
                }
             }
         }
+        stage('JFrog Push : jfrog'){
+            when { 
+                expression {  params.action == 'create' } 
+                }
+                steps{
+                    script{
+                        def artifactoryUsername = env.ARTIFACTORY_USERNAME
+                        def artifactoryIP = env.ARTIFACTORY_IP
+                        def artifactName = 'kubernetes-configmap-reload-0.0.1-SNAPSHOT.jar'
+
+                        sh "curl -X PUT -u ${artifactoryUsername} -T ${artifactName} http://${artifactoryIP}:8082/artifactory/example-repo-local/"                
+                    }
+                }
+        }
         stage('Docker Image Build'){
          when { expression {  params.action == 'create' } }
             steps{
